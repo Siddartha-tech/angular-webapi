@@ -16,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
     else
         services.AddDbContext<DataContext, SqliteDataContext>();
 
+    services.AddCors();
     services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     services.AddEndpointsApiExplorer();
@@ -26,7 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
 
     // configure strongly typed settings object
     services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
-    
+
     // configure DI for application services
     services.AddScoped<IJwtUtils, JwtUtils>();
     services.AddScoped<IUserService, UserService>();
@@ -60,7 +61,7 @@ var app = builder.Build();
 // migrate any database changes on startup (includes initial db creation)
 using (var scope = app.Services.CreateScope())
 {
-    var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();    
+    var dataContext = scope.ServiceProvider.GetRequiredService<DataContext>();
     dataContext.Database.Migrate();
 }
 
@@ -71,6 +72,12 @@ using (var scope = app.Services.CreateScope())
         app.UseSwagger();
         app.UseSwaggerUI();
     }
+
+    // global cors policy
+    app.UseCors(x => x
+        .AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
 
     app.UseHttpsRedirection();
 
