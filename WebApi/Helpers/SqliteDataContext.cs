@@ -11,6 +11,8 @@ public class SqliteDataContext : DataContext
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         // connect to sqlite database
+        // dotnet ef migrations add InitialCreate --context SqliteDataContext --output-dir Migrations/SqliteMigrations -s .\WebApi\
+        // dotnet ef database update --context SqliteDataContext -s .\WebApi\
         options.UseSqlite(Configuration.GetConnectionString("WebApiDatabase"));
     }
 }
